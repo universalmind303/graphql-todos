@@ -1,0 +1,8 @@
+/*these styles are only accessible to components expilicitly importing them ex. 
+
+Subcomponent.jsx:
+import './Subcomponent.scss';
+ */
+.subcomponent {
+  text-align: right;
+}
