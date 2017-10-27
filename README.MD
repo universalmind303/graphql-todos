@@ -28,7 +28,11 @@ Yarn
 in 3 seperate terminals -
 
 `mongod` or `sudo mongod`
+
+
 `(cd client && yarn start)`
+
+
 `(cd server && yarn start)`
 
-then go to [localhost:9000](localhost:9000) to view your app
+then go to [localhost:9000](http://localhost:9000) to view your app
