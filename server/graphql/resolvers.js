@@ -1,28 +1,17 @@
 const {MongoClient, ObjectId} = require('mongodb')
-
-
-const ctrl = require("../db/controller")
+const ctrl = require('../db/controller')
 
 const resolvers = {
   // Query
   Query: {
 
-    // TODO -- USER views
-    // retrieve user
-    User: async (root) => {
-      try {
-        let user = await ctrl.getUser()
-        return user.toString()
-      } catch (e) {
-        console.error(e.Error)
-        return e
-      }
-    },
+    // sends back the user code
+    User: ({session: {code}}) => code,
     // retrieve array of all todos 
-    Todos: async () => {
+    Todos: async ({session: {code}}) => {
       try {
-        let todos = await ctrl.getAll()
-        return todos.map(({_id, info}) => ({id: _id, info: info}))
+        const todos = await ctrl.getAll(code)
+        return todos.map(({_id, info}) => ({id: _id, data: info}))
       } catch (error) {
         console.log(error.Error)
         return error
@@ -32,37 +21,37 @@ const resolvers = {
 
   // Mutations
   Mutation: {
-    addItem: async (root, {item}) => {
-      
+    addItem: async ({session: {code}}, {input}) => {
+      const  {data } = input
       // message == error message
-      let {message, result} = await ctrl.addItem(item)
+      const {message, result} = await ctrl.addItem({code, data})
       if(message) {
         console.error(message)
         return message
       } else {
-        return `${item} added to database successfully`
+        return `${data} added to database successfully`
       }
     },
 
-    modifyItem: async (root, {id, item}) => {
-      let {result} = await ctrl.modifyItem(id, item)
+
+    deleteItem: async ({session: {code}}, {id}) => {
+      const {result, message} = await ctrl.deleteItem({code, id})
+      if(message) {
+        console.error(message)
+        return message
+      } else {
+        return result.n !== 1 ? 'Item Does not exist' : 'Item Deleted Successfully!'    
+      }
+    },
+    modifyItem: async ({session: {code}}, {input: {id, data}}) => {
+      const {result} = await ctrl.modifyItem({code, data, id})
       if(!result.nModified) {
         console.error(`request failed please check id: ${id}`)
         return `request failed please check id: ${id}`
       } else {
-        return `${item} added to database successfully`
+        return `${data} added to database successfully`
       }
     },
-
-    deleteItem: async (root, {id}) => {
-      let {result, message} = await ctrl.deleteItem(id)
-      if(message) {
-        console.error(message)
-        return message
-      } else {
-        return result.n !== 1 ? "Item Does not exist" : "Item Deleted Successfully!"    
-      }
-    }
   }
 }
 

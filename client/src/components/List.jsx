@@ -8,17 +8,16 @@ const ListQuery = gql`
 query {
   Todos {
     id
-    info
+    data
   }
 }
 `
-const List =  ({data}) =>  {
-  let {Todos} = data
+const List = ({data: {Todos}}) =>  {
   return Todos && Todos.length > 0 
-    ? (<div className="list-group">{
-        Todos.map( ({id,info}) => 
+    ? (<div className='list-group'>{
+        Todos.map( ({id,data}) => 
           <ListItemWithMutationsandDispatch 
-            item={info} 
+            item={data} 
             id={id} 
             key={id} 
           />

@@ -1,53 +1,35 @@
 // database controller
 
-
 const {MongoClient, ObjectId} = require('mongodb')
-
-// just a simple counter for ids. -- todo implement better id tracker
-var counter = 0
-const tick = () => counter++
 
 class Controller {
   // open connection to mongo
   async connect() {
     try {
-    let connected = await MongoClient.connect('mongodb://localhost:27017/db')
+    const connected = await MongoClient.connect('mongodb://localhost:27017/db')
     this.db = connected
-      return "Connected to database"
+      return 'Connected to database'
     } catch (error) {
-      console.error("Failed to connect to database", error)
-      return err
+      console.error('Failed to connect to database', error)
+      return error
     }
   }
-
-  // TODO
-  async setUser(user) {
-    this.user = user
-  }
-  // get user -- TODO
-  // async getUser() {
-  //   try {
-  //     return this.user
-  //   } catch(error) {
-  //     return error
-  //   }
-  // }
 
   // close connection to mongo
   async close() {
     try {
       this.db.close()
-      return "Database closed successfully"
+      return 'Database closed successfully'
     } catch (error) {
-      console.error("Failed to close to database", error)
-      return err
+      console.error('Failed to close to database', error)
+      return error
     }
   }
 
   // add todo
-  async addItem(data) {
+  async addItem({code, data}) {
     try {
-      let ok = await this.db.collection("Todo").insert({_id: tick().toString(), info: data,})
+      const ok = await this.db.collection(code).insert({_id: ObjectId(), info: data})
       return ok
     } catch (error) {
       return error
@@ -55,9 +37,9 @@ class Controller {
   }
 
   // get all todos
-  async getAll() {
+  async getAll(code) {
     try {
-      let todos = await this.db.collection("Todo").find({}).toArray()
+      const todos = await this.db.collection(code).find({}).toArray()
       return todos
     } catch (error) {
       return error
@@ -65,9 +47,9 @@ class Controller {
   }
 
   // delete todo by id
-  async deleteItem(id) {
+  async deleteItem({code, id}) {
     try {
-      let ok = await this.db.collection("Todo").deleteOne({"_id":id})
+      const ok = await this.db.collection(code).deleteOne({'_id':ObjectId(id)})
       return ok
     } catch (error) {
       return error
@@ -75,9 +57,9 @@ class Controller {
   }
 
   // modifies item
-  async modifyItem(id,item) {
+  async modifyItem({code, data, id}) {
     try {
-      let ok = await this.db.collection("Todo").updateOne({"_id": id}, {"info":item})
+      const ok = await this.db.collection(code).updateOne({'_id': ObjectId(id)}, {'info':data})
       return ok
     } catch (error) {
       return error

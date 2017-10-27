@@ -1,16 +1,21 @@
 const schema = `
 type Todo {
   id: ID!
-  info: String
+  data: String
 }
+
 type Query {
   User: String
   Todos: [Todo]
 }
+input TodoMutation {
+  id: ID
+  data: String
+}
 type Mutation {
-  addItem(item: String!): String
-  deleteItem(id: ID!): String
-  modifyItem(id: ID!, item: String!): String
+  addItem(input: TodoMutation): String
+  deleteItem(id: String!): String
+  modifyItem(input: TodoMutation): String
 }
 `
 module.exports = {schema: schema}

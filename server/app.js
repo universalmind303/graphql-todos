@@ -32,27 +32,29 @@ const App =  async () => {
     // some middleware
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json())
-    app.use(session({secret: 'some secret', resave: false, saveUninitialized: false}));
-    app.use("/", stripQuery, express.static(directory))
+    app.use(session({secret: 'some secret', resave: false, saveUninitialized: false, maxAge:60000}));
+    app.use(stripQuery)
+    app.use("/", express.static(directory))
 
     // connect to db
     ctrl.connect()
     
     // graphql endpoint
-    app.use('/graphql', 
-      graphqlExpress({ 
+    app.use('/graphql',
+      graphqlExpress((request) => ({ 
+        session: request.session,
+        rootValue: {session: request.session},
         schema: makeExecutableSchema({
           typeDefs: schema,
           resolvers
         }) 
-      })
+      }))
     );
-    app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' })); // if you want GraphiQL enabled
-    app.use('/:code', strip,  express.static(directory))
+    app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql'})); // if you want GraphiQL enabled
 
     //404 
     app.use((req, res, next) => {
-      let err = new Error(`ERROR 404 Sorry can't find what you're looking for!`);
+      const err = new Error(`ERROR 404 Sorry can't find what you're looking for!`);
       err.status = 404;
       next(err);
     });
@@ -60,8 +62,8 @@ const App =  async () => {
     // 500
     app.use( (err, req, res) => {
       console.log('UNKNOWN ERROR')
-      // console.log(err.stack);
-      let status = err.status || 500;
+      console.log(err.stack);
+      const status = err.status || 500;
       res.status(status).send(err.message);
     });
     // serve

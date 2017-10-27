@@ -13,14 +13,14 @@ import {modal ,todos, user} from './reducers/main.jsx'
 
 // graphql 
 const networkInterface = createNetworkInterface({
+    opts : {
+      credentials: 'include'
+    },
     uri: "/graphql",
 })
-
 const client = new ApolloClient({
   networkInterface: networkInterface ,
 });
-
-
 // redux store 
 const store = createStore(
   combineReducers({
