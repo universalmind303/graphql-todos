@@ -21,18 +21,16 @@ Yarn
 
 ## Install Dependencies
 `(cd client && yarn install)`
+`(cd client && yarn build)` 
 `(cd server && yarn install)`
 
 ## Run Servers 
 
-in 3 seperate terminals -
+in 2 seperate terminals -
 
 `mongod` or `sudo mongod`
 
 
-`(cd client && yarn start)`
-
-
 `(cd server && yarn start)`
 
-then go to [localhost:9000](http://localhost:9000) to view your app
+then go to [localhost:8000](http://localhost:8000) to view your app

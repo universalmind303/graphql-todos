@@ -44,10 +44,7 @@ const App =  async () => {
       graphqlExpress((request) => ({ 
         session: request.session,
         rootValue: {session: request.session},
-        schema: makeExecutableSchema({
-          typeDefs: schema,
-          resolvers
-        }) 
+        schema: schema
       }))
     );
     app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql'})); // if you want GraphiQL enabled

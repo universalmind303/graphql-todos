@@ -6,9 +6,12 @@ const resolvers = {
   Query: {
 
     // sends back the user code
-    User: ({session: {code}}) => code,
+    userResolver: ({session: {code}}) => code,
+
+    
     // retrieve array of all todos 
-    Todos: async ({session: {code}}) => {
+    todosResolver: async ({session: {code}}) => {
+      console.log("Xxxxxxxxxxxxxx")
       try {
         const todos = await ctrl.getAll(code)
         return todos.map(({_id, info}) => ({id: _id, data: info}))
@@ -18,6 +21,8 @@ const resolvers = {
       }
     }
   },
+
+
 
   // Mutations
   Mutation: {
