@@ -9,8 +9,8 @@ const {
   GraphQLSchema } = require('graphql');
 
 const {
-  Query: {userResolver, todosResolver} , 
-  Mutation: {addItem, deleteItem, modifyItem}
+  Query: { userResolver, todosResolver } , 
+  Mutation: { addItem, deleteItem, modifyItem }
 } = require('./resolvers')
 
 const todosType = new GraphQLObjectType({
@@ -23,8 +23,8 @@ const todosType = new GraphQLObjectType({
 const todoMutation = new GraphQLInputObjectType({
   name: 'TodoMutation',
   fields : {
-    id: { type: GraphQLString},
-    data: { type: GraphQLString},
+    id: { type: GraphQLString },
+    data: { type: GraphQLString },
   }
 })
 
@@ -49,14 +49,14 @@ const mutationType = new GraphQLObjectType({
     deleteItem: {
       type: GraphQLString,
       args : {
-        id : {type: GraphQLString}
+        id : { type: GraphQLString }
       },
       resolve: deleteItem, 
     }, 
     addItem : {
       type: GraphQLString,
       args : {
-        input : { type : todoMutation}
+        input : { type : todoMutation }
       },
       resolve: addItem
     },
@@ -76,4 +76,4 @@ const dynamicSchema = new GraphQLSchema({
 })
 
 
-module.exports = {schema: dynamicSchema}
+module.exports = { schema: dynamicSchema }

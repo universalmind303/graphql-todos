@@ -7,16 +7,13 @@ const resolvers = {
 
     // sends back the user code
     userResolver: ({session: {code}}) => code,
-
-    
-    // retrieve array of all todos 
+    // retrieve array of all todos
     todosResolver: async ({session: {code}}) => {
-      console.log("Xxxxxxxxxxxxxx")
       try {
         const todos = await ctrl.getAll(code)
         return todos.map(({_id, info}) => ({id: _id, data: info}))
       } catch (error) {
-        console.log(error.Error)
+        console.error(error.Error)
         return error
       }
     }
@@ -45,7 +42,7 @@ const resolvers = {
         console.error(message)
         return message
       } else {
-        return result.n !== 1 ? 'Item Does not exist' : 'Item Deleted Successfully!'    
+        return result.n !== 1 ? 'Item Does not exist' : 'Item Deleted Successfully!'
       }
     },
     modifyItem: async ({session: {code}}, {input: {id, data}}) => {

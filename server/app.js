@@ -2,16 +2,10 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const {MongoClient, ObjectId} = require('mongodb')
-
-
-
 
 // env variables for production
 const directory = process.env.PUBLIC || '../client/dist';
 const port = process.env.PORT || 8000;
-
-
 const app = express()
 
 //db controller
@@ -20,7 +14,7 @@ const ctrl = require("./db/controller")
 // custom middleware
 const {stripQuery} = require('./middleware')
 
-//graphql related 
+//graphql related
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const  { makeExecutableSchema } = require('graphql-tools');
 const { schema } = require("./graphql/schema")
@@ -36,12 +30,12 @@ const App =  async () => {
     app.use(stripQuery)
     app.use("/", express.static(directory))
 
-    // connect to db
-    ctrl.connect()
-    
+    // connect to db 1st argument is collection name
+    ctrl.connect('todos')
+
     // graphql endpoint
     app.use('/graphql',
-      graphqlExpress((request) => ({ 
+      graphqlExpress((request) => ({
         session: request.session,
         rootValue: {session: request.session},
         schema: schema
@@ -49,7 +43,7 @@ const App =  async () => {
     );
     app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql'})); // if you want GraphiQL enabled
 
-    //404 
+    //404
     app.use((req, res, next) => {
       const err = new Error(`ERROR 404 Sorry can't find what you're looking for!`);
       err.status = 404;
